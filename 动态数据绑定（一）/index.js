@@ -23,7 +23,7 @@ class Observer {
 					return
 				}
 				console.log(`你设置了${prop}, 新的值为${newVal}`)
-				return newVal
+				val = newVal
 			}
 		})
 	}
