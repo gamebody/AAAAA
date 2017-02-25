@@ -21,7 +21,7 @@ const generateEventObj = () => ({
 class Observer {
   constructor (obj) {
     this.data = obj
-    this.walk(this.data)
+    this.walk(obj)
     this.emitter = generateEventObj()
   }
 
@@ -31,13 +31,13 @@ class Observer {
       if (typeof val === 'object') {
         new Observer(val)
       }
-      this.convert(prop, val)
+      this.defineReactive(this.data, prop, val)
     }
   }
 
-  convert (prop, val) {
+  defineReactive (target, prop, val) {
     const that = this
-    Object.defineProperty(this.data, prop, {
+    Object.defineProperty(target, prop, {
       get () {
         console.log(`你访问了${prop}`)
         return val
@@ -64,7 +64,10 @@ class Observer {
 }
 
 const app = new Observer({
-  name: 'gamebody',
+  name: {
+    firstName: 'l',
+    lastName: 'y'
+  },
   age: 18
 })
 
@@ -74,6 +77,6 @@ app.$watch('age', function(age) {
 app.$watch('name', function(name) {
   console.log(`我的新名字${name}`)
 })
-app.data.age = 18
+
 app.data.age = 10
-app.data.name = 'haha'
+app.data.name.firstName = 'haha'
