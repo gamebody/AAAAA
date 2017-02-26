@@ -17,26 +17,32 @@ const generateEventObj = () => ({
     }
   }
 })
+const event = generateEventObj()
 
 class Observer {
-  constructor (obj) {
-    this.data = obj
-    this.walk(obj)
-    this.emitter = generateEventObj()
+  constructor (obj, hasData = true) {
+    if (hasData) {
+      this.data = obj
+      this.walk(obj)
+    } else {
+      this.walk(obj)
+    }
   }
 
   walk (obj) {
     for (let prop of Object.keys(obj)) {
       let val = obj[prop]
+      // 普通对象直接调用
+      // 对象递归调用
       if (typeof val === 'object') {
-        new Observer(val)
+        new Observer(val, false)       
+      } else {
+        this.defineReactive(obj, prop, val)
       }
-      this.defineReactive(this.data, prop, val)
     }
   }
 
   defineReactive (target, prop, val) {
-    const that = this
     Object.defineProperty(target, prop, {
       get () {
         console.log(`你访问了${prop}`)
@@ -47,19 +53,19 @@ class Observer {
           return;
         }
         if (typeof newVal === 'object') {
-          new Observer(newVal)
+          new Observer(newVal, false)
+        }
+        if (event.eventsObj[prop]) {
+          event.emit(prop, newVal)
         }
         console.log(`你设置了${prop},新的值为${newVal}`)
-        if (that.emitter.eventsObj[prop]) {
-          that.emitter.emit(prop, newVal)
-        }
         val = newVal
       }
     })
   }
 
   $watch (prop, cb) {
-    this.emitter.on(prop, cb)
+    event.on(prop, cb)
   }
 }
 
@@ -74,7 +80,7 @@ const app = new Observer({
 app.$watch('age', function(age) {
   console.log(`我们老了，现在${age}`)
 })
-app.$watch('name', function(name) {
+app.$watch('firstName', function(name) {
   console.log(`我的新名字${name}`)
 })
 
