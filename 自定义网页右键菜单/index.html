@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>自定义网页右键菜单</title>
+  <style>
+    body {
+      margin: 0;
+    }
+    #right {
+      height: 400px;
+      background: #ccc;
+    }
+    #menu {
+      position: absolute;
+      width: 300px;
+      height: 100px;
+      border: 1px solid #ccc;
+      background:#fff;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="right">
+    right click to see me
+  </div>
+  <div id="menu">
+    <ul>
+      <li>Menu Item 1</li>
+      <li>Menu Item 2</li>      
+    </ul>
+  </div>
+</body>
+  <script>
+    var odiv = document.getElementsByTagName('div')[0]
+    var omenu = document.getElementById('menu')
+    var odivComputed = document.defaultView.getComputedStyle(odiv, null)
+    var omenuComputed = document.defaultView.getComputedStyle(omenu, null)
+
+    var odivWidth = parseInt(odivComputed.width)
+    var odivHeight = parseInt(odivComputed.height)
+
+    var omenuWidth = parseInt(omenuComputed.width)
+    var omenuHeight = parseInt(omenuComputed.height)
+
+    odiv.addEventListener('contextmenu', function(e) {
+      // 阻止默认事件
+      e.preventDefault()
+      var menuLeft, menuTop;
+
+      var clickX = e.clientX
+      var clickY = e.clientY
+
+      var isGoRight = odivWidth - (clickX + omenuWidth) < 0 // 是否超出右面
+      var isGoBottom = odivHeight - (clickY + omenuHeight) < 0 // 是否超出下面
+     
+      if (!isGoRight && !isGoBottom) {
+        menuLeft = clickX
+        menuTop = clickY
+      } else if (isGoRight && !isGoBottom) {
+        menuLeft = clickX - omenuWidth
+        menuTop = clickY
+      } else if (!isGoRight && isGoBottom) {
+        menuLeft = clickX
+        menuTop = clickY - omenuHeight
+      } else {
+        menuLeft = clickX - omenuWidth
+        menuTop = clickY - omenuHeight        
+      }
+      omenu.style.left = menuLeft + 'px'
+      omenu.style.top = menuTop + 'px'
+      omenu.style.visibility = 'visible'
+    })
+    
+    document.addEventListener('click', function(e) {
+      var target = e.target
+
+      if (target === odiv) {
+        console.log('点击了右键区域')
+        return
+      }
+      omenu.style.visibility = 'hidden'
+    })
+  </script>
+
+</html>
