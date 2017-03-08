@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>使用css实现折叠面板</title>
+  <style>
+    .panel {
+      width: 1000px;
+      border: 1px solid #ccc;
+      margin: 0 auto;
+    }
+    .panel input {
+      display: none;
+    }
+    .panel input:checked + p {
+      display: none;
+    }
+    .panel p {
+      border-top: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <label for="haha">hello</label>
+    <input type="checkbox" name="hah" id="haha">
+    <p>hello wolasdadhello wolasdadhello wolasdadhello wolasdadhello wolasdadhello wolasdad</p>
+  </div>
+
+
+</body>
+</html>
